@@ -11,16 +11,16 @@ const {
   removeFavoriteMovie
 } = require('../controllers/userController');
 const { authenticate, isAdmin, canModifyUser } = require('../../middlewares/auth');
-const { upload } = require('../../middlewares/file')
+const { uploadUser } = require('../../middlewares/file')
 
 const router = express.Router();
 
-router.post('/register', upload.single('image'), register);
+router.post('/register', uploadUser.single('image'), register);
 router.post('/login', login);
 
 router.get('/', authenticate, isAdmin, getAllUsers);
-router.get('/:id', authenticate, getUserById);
-router.put('/:id', authenticate, canModifyUser, upload.single('image'), updateUser);
+router.get('/:id', authenticate, canModifyUser, getUserById);
+router.put('/:id', authenticate, canModifyUser, uploadUser.single('image'), updateUser);
 router.delete('/:id', authenticate, canModifyUser, deleteUser);
 
 router.patch('/:id/role', authenticate, isAdmin, changeUserRole);

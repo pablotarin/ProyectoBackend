@@ -59,6 +59,26 @@ npm start     # servidor producción
 2. MongoDB Atlas → Collections → users
 3. Editar documento: `role: "user"` → `role: "admin"`
 
+## Credenciales de Prueba
+
+Para facilitar la corrección del proyecto, se proporcionan las siguientes credenciales:
+
+**Usuario Admin:**
+```json
+{
+  "email": "admin@test.com",
+  "password": "admin123"
+}
+```
+
+**Usuario Normal:**
+```json
+{
+  "email": "user@test.com",
+  "password": "user123"
+}
+```
+
 ## Modelos
 
 **User:**
@@ -90,27 +110,35 @@ npm start     # servidor producción
 ## Endpoints
 
 ### Autenticación
-- `POST /api/users/register` - Registro (form-data con image opcional)
-- `POST /api/users/login` - Login
+| Método | Ruta | Descripción | Auth |
+|--------|------|-------------|------|
+| POST | `/api/users/register` | Registro de usuario | No |
+| POST | `/api/users/login` | Login | No |
 
 ### Usuarios
-- `GET /api/users` - Ver todos (admin)
-- `GET /api/users/:id` - Ver uno
-- `PUT /api/users/:id` - Actualizar
-- `DELETE /api/users/:id` - Eliminar
-- `PATCH /api/users/:id/role` - Cambiar rol (admin)
+| Método | Ruta | Descripción | Auth | Rol |
+|--------|------|-------------|------|-----|
+| GET | `/api/users` | Ver todos | Sí | Admin |
+| GET | `/api/users/:id` | Ver uno | Sí | User/Admin |
+| PUT | `/api/users/:id` | Actualizar | Sí | Owner/Admin |
+| DELETE | `/api/users/:id` | Eliminar | Sí | Owner/Admin |
+| PATCH | `/api/users/:id/role` | Cambiar rol | Sí | Admin |
 
 ### Favoritos
-- `POST /api/users/:id/favorites` - Añadir película
-- `DELETE /api/users/:id/favorites` - Quitar película
+| Método | Ruta | Descripción | Auth | Rol |
+|--------|------|-------------|------|-----|
+| POST | `/api/users/:id/favorites` | Añadir película | Sí | Owner/Admin |
+| DELETE | `/api/users/:id/favorites` | Quitar película | Sí | Owner/Admin |
 
 ### Películas
-- `GET /api/movies` - Todas
-- `GET /api/movies/:id` - Una
-- `GET /api/movies/genre/:genre` - Por género
-- `POST /api/movies` - Crear (admin)
-- `PUT /api/movies/:id` - Actualizar (admin)
-- `DELETE /api/movies/:id` - Eliminar (admin)
+| Método | Ruta | Descripción | Auth | Rol |
+|--------|------|-------------|------|-----|
+| GET | `/api/movies` | Ver todas | No | - |
+| GET | `/api/movies/:id` | Ver una | No | - |
+| GET | `/api/movies/genre/:genre` | Por género | No | - |
+| POST | `/api/movies` | Crear | Sí | Admin |
+| PUT | `/api/movies/:id` | Actualizar | Sí | Admin |
+| DELETE | `/api/movies/:id` | Eliminar | Sí | Admin |
 
 **Géneros:** Acción, Comedia, Drama, Terror, Ciencia Ficción, Romance, Thriller, Animación, Documental, Aventura
 

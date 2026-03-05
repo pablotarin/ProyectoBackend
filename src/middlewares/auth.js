@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../api/models/User.js');
+const { verifyToken } = require('../utils/token.js');
 
 const authenticate = async (req, res, next) => {
   try {
@@ -12,7 +13,7 @@ const authenticate = async (req, res, next) => {
       });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = verifyToken(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.userId);
 
     if (!user) {

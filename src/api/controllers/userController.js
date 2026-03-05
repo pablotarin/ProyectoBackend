@@ -1,7 +1,8 @@
 const User = require("../models/User.js");
 const bcrypt = require("bcrypt");
 const { generateToken } = require("../../utils/token.js");
-const { deleteImgCloudinary } = require("../../utils/deleteFile.js")
+const { deleteImgCloudinary } = require("../../utils/deleteFile.js");
+const Movie = require("../models/Movie.js");
 
 const register = async (req, res) => {
   try {
@@ -82,7 +83,9 @@ const login = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().populate("favoriteMovies");
+    const users = await User.find()
+      .select("-password")
+      .populate("favoriteMovies");
     res.json({
       success: true,
       data: users,
@@ -122,18 +125,25 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { username, email } = req.body;
+    const { username, email,password } = req.body;
     const userId = req.params.id;
 
     const updateData = {};
     if (username) updateData.username = username;
     if (email) updateData.email = email;
 
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+
+    let oldImageUrl = null;
+
     if (req.file) {
       const user = await User.findById(userId);
 
       if (user.image) {
-        await deleteImgCloudinary(user.image);
+        oldImageUrl = user.image;
       }
 
       updateData.image = req.file.path;
@@ -149,6 +159,10 @@ const updateUser = async (req, res) => {
         success: false,
         message: "Usuario no encontrado",
       });
+    }
+
+    if (oldImageUrl) {
+      await deleteImgCloudinary(oldImageUrl);
     }
 
     res.json({
@@ -184,13 +198,6 @@ const changeUserRole = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Usuario no encontrado",
-      });
-    }
-
-    if (currentUser.role !== "admin") {
-      return res.status(403).json({
-        success: false,
-        message: "Solo los administradores pueden cambiar roles",
       });
     }
 
@@ -256,7 +263,15 @@ const addFavoriteMovie = async (req, res) => {
       });
     }
 
-    if (user.favoriteMovies.includes(movieId)) {
+    const movieExists = await Movie.findById(movieId);
+    if (!movieExists) {
+      return res.status(404).json({
+        success: false,
+        message: "Película no encontrada",
+      });
+    }
+
+    if (user.favoriteMovies.some((id) => id.toString() === movieId)) {
       return res.status(400).json({
         success: false,
         message: "La película ya está en favoritos",
