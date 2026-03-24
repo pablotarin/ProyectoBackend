@@ -20,7 +20,7 @@ const movieStorage = new CloudinaryStorage({
   },
 });
 
-const uploadUser  = multer({ userStorage });
+const uploadUser  = multer({ storage: userStorage });
 const uploadMovie = multer({ storage: movieStorage });
 
 module.exports = { uploadUser, uploadMovie }

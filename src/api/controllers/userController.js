@@ -125,17 +125,17 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { username, email,password } = req.body;
+    const { username, email, password } = req.body;
     const userId = req.params.id;
 
     const updateData = {};
     if (username) updateData.username = username;
     if (email) updateData.email = email;
-
-    if (password) {
+    if (password) updateData.password = password;
+    /* if (password) {
       const salt = await bcrypt.genSalt(10);
       updateData.password = await bcrypt.hash(password, salt);
-    }
+    } */
 
     let oldImageUrl = null;
 

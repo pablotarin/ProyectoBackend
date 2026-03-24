@@ -114,7 +114,7 @@ const updateMovie = async (req, res) => {
 
 const deleteMovie = async (req, res) => {
   try {
-    const movie = await Movie.findByIdAndDelete(req.params.id);
+    const movie = await Movie.findById(req.params.id);
 
     if (!movie) {
       return res.status(404).json({
@@ -126,7 +126,7 @@ const deleteMovie = async (req, res) => {
     if (movie.poster) {
       await deleteImgCloudinary(movie.poster);
     }
-    
+
     await Movie.findByIdAndDelete(req.params.id);
 
     res.json({

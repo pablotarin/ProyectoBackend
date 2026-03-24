@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const User = require('../api/models/User.js');
 const { verifyToken } = require('../utils/token.js');
 
